@@ -104,10 +104,6 @@ struct List {
 
 	}
 	void insert(int index, int value) {
-		if (index == count() || count() == 0) {
-			add(value);
-			return;
-		}
 		Node* node = last;
 		for (int i = 0; i < index; i++) { node = node->next; }
 		Node* insert = new Node();
