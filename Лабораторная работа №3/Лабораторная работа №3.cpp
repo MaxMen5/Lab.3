@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 using namespace std;
 
 void instruction() {
@@ -75,14 +75,9 @@ struct List {
 				else { last = lastElement; }
 				break;
 			}
-			if (node->next->param < 0) {
+			if (node->next->param < 0) { // Общий случай
 				del = node->next;
-				if (node == lastElement) { // Для первого
-					last->next = node->next->next;
-				}
-				else { // Общий случай
-					node->next = node->next->next;
-				}
+				node->next = node->next->next;
 				delete del;
 				counting--;
 			}
