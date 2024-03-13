@@ -148,7 +148,7 @@ int main() {
 			cout << "Введите позицию: ";
 			int pozition;
 			cin >> pozition;
-			if (pozition > list.count() || pozition < 0) {
+			if (pozition >= list.count() || pozition < 0) {
 				cout << "Некорректная позиция!\n";
 			}
 			else {
