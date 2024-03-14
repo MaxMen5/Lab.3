@@ -21,26 +21,23 @@ struct Node {
 
 struct List {
 	int counting = 0;
+	int position = 0;
 	Node* last = nullptr;
 
-	int count() {
-		return counting;
-	}
-	int count(int value) {
-		int ans = 0, kol = count();
-		if (kol == 0) { return 0; }
-		Node* node = last->next;
-		for (int i = 0; i < kol; i++) {
-			if (node->param == value) { ans++; }
-			node = node->next;
+	void toPreposition(int number) {
+		while (position != number) {
+			if (number == 0 && position == counting) { break; }
+			last = last->next;
+			position++;
+			if (position > counting) { position = 1; }
 		}
-		return ans;
 	}
 	void add(int value) {
+		toPreposition(counting);
 		Node* node = new Node();
 		node->param = value;
-		if (count() == 0) { 
-			last = node; 
+		if (count() == 0) {
+			last = node;
 			last->next = node;
 		}
 		else {
@@ -49,89 +46,96 @@ struct List {
 			last = node;
 		}
 		counting++;
+		position++;
+	}
+	void insert(int index, int value) {
+		if (index == counting) {
+			add(value);
+			return;
+		}
+		toPreposition(index);
+		Node* node = new Node();
+		node->param = value;
+		node->next = last->next;
+		last->next = node;
+		last = node;
+		position++;
+		if (position > counting) { position = 1; }
+		counting++;
+	}
+	int elementAt(int index) {
+		toPreposition(index);
+		return last->next->param;
+	}
+	void removeAt(int index) {
+		toPreposition(index);
+		Node* del = last->next;
+		last->next = del->next;
+		delete del;
+		counting--;
+		if (position > counting) { position = counting; }
+		if (counting == 0) { last = nullptr; }
+	}
+	void insertBeforeNegative() {
+		int kol = counting;
+		for (int i = 0; i < kol; i++) {
+			if (last->next->param < 0) {
+				if (position != counting) { insert(position, 1); }
+				else { insert(0, 1); }
+			}
+			last = last->next;
+			position++;
+		}
+	}
+	void removeNegative() {
+		if (counting == 0) { return; }
+		bool is_positive = false;
+		if (last->param < 0) {
+			for (int i = 0; i < counting; i++) {
+				last = last->next;
+				position++;
+				if (position > counting) { position = 1; }
+				if (last->param > 0) {
+					is_positive = true;
+					break;
+				}
+			}
+			if (!is_positive) {
+				clear();
+				return;
+			}
+		}
+		int kol = counting;
+		for (int i = 0; i < kol; i++) {
+			if (last->next->param < 0) {
+				removeAt(position);
+			}
+			else {
+				last = last->next;
+				position++;
+				if (position > counting) { position = 1; }
+			}
+		} 
+	}
+	int count(int value) {
+		int ans = 0;
+		for (int i = 0; i < counting; i++) {
+			if (last->param == value) { ans++; }
+			last = last->next;
+		}
+		return ans;
 	}
 	void clear() {
-		int kol = count();
-		for (int i = 0; i < kol; i++) {
+		for (int i = 0; i < counting; i++) {
 			Node* del = last->next;
 			last->next = del->next;
 			delete del;
 		}
 		last = nullptr;
 		counting = 0;
+		position = 0;
 	}
-	void removeNegative() {
-		int kol = count();
-		if (kol == 0) { return; }
-		Node* lastElement = last;
-		Node* node = last;
-		while(true) {
-			Node* del = node;
-			if (node->next == lastElement) { // Для последнего
-				if (lastElement->param < 0) {
-					node->next = lastElement->next;
-					delete lastElement;
-					counting--;
-				}
-				else { last = lastElement; }
-				break;
-			}
-			if (node->next->param < 0) { // Общий случай
-				del = node->next;
-				node->next = node->next->next;
-				delete del;
-				counting--;
-			}
-			else { node = node->next; }
-			last = node;
-		}
-		if (count() == 0) { last = nullptr; }
-	}
-	void insertBeforeNegative() {
-		if (count() == 0) { return; }
-		Node* node = last;
-		while (true) {
-			if (node->next->param < 0) {
-				Node* add = new Node();
-				counting++;
-				add->param = 1;
-				add->next = node->next;
-				node->next = add;
-				node = add;
-			}
-			node = node->next;
-			if (node == last) { break; }
-		}
-
-	}
-	void insert(int index, int value) {
-		if (index == count()) {
-			add(value);
-			return;
-		}
-		Node* node = last;
-		for (int i = 0; i < index; i++) { node = node->next; }
-		Node* insert = new Node();
-		counting++;
-		insert->param = value;
-		insert->next = node->next;
-		node->next = insert;
-	}
-	void removeAt(int index) {
-		Node* node = last;
-		for (int i = 0; i < index; i++) { node = node->next; }
-		Node* del = node->next;
-		node->next = del->next;
-		if (del == last) { last = node; }
-		delete del;
-		counting--;
-		if (count() == 0) { last = nullptr; }
-	}
-	int elementAt(int index) {
-		Node* node = last;
-		for (int i = 0; i < index; i++) { node = node->next; }
-		return node->next->param;
-	}
+	int count() { return counting; }
 };
 
 int main() {
@@ -199,7 +203,7 @@ int main() {
 			break;
 		case 9:
 			list.clear();
-			cout << "Очередь очищена\n";
+			cout << "Список очищен\n";
 			break;
 		case 0:
 			return 0;
