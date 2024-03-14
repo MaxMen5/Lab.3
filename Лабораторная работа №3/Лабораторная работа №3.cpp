@@ -28,6 +28,7 @@ struct List {
 	}
 	int count(int value) {
 		int ans = 0, kol = count();
+		if (kol == 0) { return 0; }
 		Node* node = last->next;
 		for (int i = 0; i < kol; i++) {
 			if (node->param == value) { ans++; }
@@ -104,6 +105,10 @@ struct List {
 
 	}
 	void insert(int index, int value) {
+		if (index == count()) {
+			add(value);
+			return;
+		}
 		Node* node = last;
 		for (int i = 0; i < index; i++) { node = node->next; }
 		Node* insert = new Node();
@@ -148,7 +153,7 @@ int main() {
 			cout << "Введите позицию: ";
 			int pozition;
 			cin >> pozition;
-			if (pozition >= list.count() || pozition < 0) {
+			if (pozition > list.count() || pozition < 0) {
 				cout << "Некорректная позиция!\n";
 			}
 			else {
