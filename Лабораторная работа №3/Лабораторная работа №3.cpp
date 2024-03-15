@@ -36,17 +36,15 @@ struct List {
 		toPreposition(counting);
 		Node* node = new Node();
 		node->param = value;
-		if (count() == 0) {
+		if (counting == 0) {
 			last = node;
 			last->next = node;
 		}
 		else {
 			node->next = last->next;
 			last->next = node;
-			last = node;
 		}
 		counting++;
-		position++;
 	}
 	void insert(int index, int value) {
 		if (index == counting) {
@@ -58,9 +56,6 @@ struct List {
 		node->param = value;
 		node->next = last->next;
 		last->next = node;
-		last = node;
-		position++;
-		if (position > counting) { position = 1; }
 		counting++;
 	}
 	int elementAt(int index) {
@@ -85,37 +80,20 @@ struct List {
 			}
 			last = last->next;
 			position++;
+			if (position > counting) { position = 1; }
 		}
 	}
 	void removeNegative() {
 		if (counting == 0) { return; }
-		bool is_positive = false;
-		if (last->param < 0) {
-			for (int i = 0; i < counting; i++) {
-				last = last->next;
-				position++;
-				if (position > counting) { position = 1; }
-				if (last->param > 0) {
-					is_positive = true;
-					break;
-				}
-			}
-			if (!is_positive) {
-				clear();
-				return;
-			}
-		}
 		int kol = counting;
 		for (int i = 0; i < kol; i++) {
-			if (last->next->param < 0) {
-				removeAt(position);
-			}
+			if (last->next->param < 0) { removeAt(position); }
 			else {
 				last = last->next;
 				position++;
 				if (position > counting) { position = 1; }
 			}
-		} 
+		}
 	}
 	int count(int value) {
 		int ans = 0;
