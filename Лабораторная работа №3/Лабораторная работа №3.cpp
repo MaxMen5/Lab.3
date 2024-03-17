@@ -43,8 +43,10 @@ struct List {
 		else {
 			node->next = last->next;
 			last->next = node;
+			last = node;
 		}
 		counting++;
+		position++;
 	}
 	void insert(int index, int value) {
 		if (index == counting) {
@@ -56,6 +58,9 @@ struct List {
 		node->param = value;
 		node->next = last->next;
 		last->next = node;
+		last = node;
+		position++;
+		if (position > counting) { position = 1; }
 		counting++;
 	}
 	int elementAt(int index) {
